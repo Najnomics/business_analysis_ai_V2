@@ -55,12 +55,13 @@ class SomnaAITester:
         success, response = self.run_test(
             "Health Check",
             "GET",
-            "api/health",
+            "api",
             200
         )
         if success:
-            print(f"Health Status: {response.get('status')}")
-            print(f"Demo Mode: {response.get('demo_mode')}")
+            print(f"Message: {response.get('message')}")
+            print(f"Version: {response.get('version')}")
+            print(f"Powered by: {response.get('powered_by')}")
         return success
 
     def test_register(self, name, email, password):
