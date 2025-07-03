@@ -17,6 +17,7 @@ import asyncio
 import httpx
 import google.generativeai as genai
 from enum import Enum
+import bcrypt
 
 # Load environment variables
 ROOT_DIR = Path(__file__).parent
@@ -44,11 +45,15 @@ if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
 
 # JWT Configuration
-JWT_SECRET = os.environ.get('JWT_SECRET')
+JWT_SECRET = os.environ.get('JWT_SECRET', 'somna_ai_jwt_secret_key_2024_secure_random_string')
 JWT_EXPIRES_IN = os.environ.get('JWT_EXPIRES_IN', '7d')
 
 # Create FastAPI app
-app = FastAPI(title="Somna AI - Business Analysis Platform", version="2.0.0")
+app = FastAPI(
+    title="Somna AI - Business Analysis Platform", 
+    version="2.0.0",
+    description="Next-Generation AI-Powered Business Analysis & Strategic Intelligence Platform"
+)
 api_router = APIRouter(prefix="/api")
 
 # Security
