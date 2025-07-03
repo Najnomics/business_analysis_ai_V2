@@ -160,7 +160,7 @@ class SomnaAITester:
 
 def main():
     # Setup
-    base_url = "https://603c72a5-e474-4e48-b254-8766914559c3.preview.emergentagent.com"
+    base_url = "http://localhost:8001"
     tester = SomnaAITester(base_url)
     
     # Test credentials
