@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import './App.css';
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import { AuthProvider } from "./contexts/AuthContext";
+import Header from "./components/layout/Header";
+import Footer from "./components/layout/Footer";
+import LandingPage from "./pages/LandingPage";
+import "./App.css";
 
 // Auth Context
 const AuthContext = React.createContext();
