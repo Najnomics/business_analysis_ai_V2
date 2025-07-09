@@ -1111,59 +1111,307 @@ class BusinessAnalysisService:
         base_context = f"""
         Business Input: {analysis.business_input}
         
-        Please perform a comprehensive {framework.replace('_', ' ').title()} analysis for this business.
+        IMPORTANT: Please provide extremely detailed, comprehensive analysis with specific insights, 
+        quantitative assessments, actionable recommendations, and evidence-based conclusions.
+        Include specific examples, metrics, benchmarks, and implementation guidance.
         """
         
+        # Enhanced prompts for more detailed analysis
         framework_prompts = {
-            "swot_analysis": f"{base_context} Provide detailed SWOT analysis with strengths, weaknesses, opportunities, and threats. Include confidence scores and impact assessments.",
+            "swot_analysis": f"""{base_context} 
             
-            "pestel_analysis": f"{base_context} Analyze Political, Economic, Social, Technological, Environmental, and Legal factors affecting this business. Include trend directions and impact scores.",
+            Perform an exhaustive SWOT analysis with:
+            1. STRENGTHS: Identify 5-7 key strengths with impact assessment (high/medium/low), confidence scores (0-1), and specific evidence
+            2. WEAKNESSES: Identify 4-6 key weaknesses with impact assessment, confidence scores, and mitigation strategies
+            3. OPPORTUNITIES: Identify 5-8 opportunities with market sizing, timeline, and implementation difficulty
+            4. THREATS: Identify 4-6 threats with probability assessment, impact severity, and contingency plans
             
-            "porter_five_forces": f"{base_context} Evaluate competitive rivalry, threat of new entrants, bargaining power of suppliers, bargaining power of buyers, and threat of substitutes.",
+            For each item, provide:
+            - Detailed description and evidence
+            - Quantitative impact assessment where possible
+            - Confidence score based on data quality
+            - Actionable recommendations
+            - Industry benchmarks and comparisons
             
-            "business_model_canvas": f"{base_context} Generate a complete Business Model Canvas with all 9 components: customer segments, value propositions, channels, customer relationships, revenue streams, key activities, key resources, key partnerships, and cost structure.",
+            Format as structured JSON with all details included.""",
             
-            "vrio_framework": f"{base_context} Analyze resources using VRIO framework: Value, Rarity, Imitability, and Organization. Assess competitive advantages.",
+            "pestel_analysis": f"""{base_context}
             
-            "bcg_matrix": f"{base_context} Classify business segments into Stars, Cash Cows, Question Marks, and Dogs based on market growth and market share.",
+            Conduct comprehensive PESTEL analysis covering:
             
-            "competitive_landscape": f"{base_context} Identify direct and indirect competitors, analyze their strengths/weaknesses, market positioning, and differentiation opportunities.",
+            POLITICAL: Government policies, regulations, political stability, tax policies
+            ECONOMIC: Economic growth, interest rates, inflation, market dynamics
+            SOCIAL: Demographics, cultural attitudes, education, consumer behavior
+            TECHNOLOGICAL: Innovation, R&D, automation, digitalization
+            ENVIRONMENTAL: Climate change, sustainability, resource scarcity, ESG
+            LEGAL: Legal framework, compliance, IP rights, employment law
             
-            "customer_segmentation": f"{base_context} Create detailed customer personas with demographics, psychographics, pain points, and buying behaviors. Include customer lifetime value assessment.",
+            For each factor, provide impact score (1-10), trend direction, and detailed analysis.""",
             
-            "financial_analysis": f"{base_context} Perform comprehensive financial analysis including liquidity, profitability, solvency, and efficiency ratios. Include financial projections.",
+            "porter_five_forces": f"""{base_context}
             
-            "break_even_analysis": f"{base_context} Calculate break-even point, analyze fixed and variable costs, perform scenario planning and sensitivity analysis.",
+            Analyze competitive dynamics using Porter's Five Forces with detailed assessment of:
+            1. Competitive Rivalry (intensity 1-10)
+            2. Threat of New Entrants (threat level 1-10) 
+            3. Bargaining Power of Suppliers (power 1-10)
+            4. Bargaining Power of Buyers (power 1-10)
+            5. Threat of Substitutes (threat level 1-10)
             
-            "unit_economics": f"{base_context} Analyze Customer Acquisition Cost (CAC), Customer Lifetime Value (CLTV), contribution margins, and unit profitability.",
+            Provide specific examples and strategic implications for each force.""",
             
-            "revenue_model": f"{base_context} Recommend optimal revenue models (subscription, freemium, marketplace, etc.), pricing strategies, and revenue stream diversification.",
+            "business_model_canvas": f"""{base_context}
             
-            "risk_assessment": f"{base_context} Identify and assess financial, operational, strategic, and reputational risks. Include mitigation strategies and risk monitoring.",
+            Generate comprehensive Business Model Canvas with detailed descriptions for:
+            1. Customer Segments - demographics, needs, behaviors
+            2. Value Propositions - unique differentiators
+            3. Channels - distribution and sales
+            4. Customer Relationships - acquisition and retention
+            5. Revenue Streams - models and pricing
+            6. Key Resources - assets and capabilities
+            7. Key Activities - core processes
+            8. Key Partnerships - strategic alliances
+            9. Cost Structure - major cost categories
             
-            "scenario_analysis": f"{base_context} Model best-case, worst-case, and most likely scenarios. Include Monte Carlo simulation and confidence intervals.",
+            Provide specific examples and metrics for each component.""",
             
-            "market_intelligence": f"{base_context} Analyze market size (TAM/SAM/SOM), growth trends, competitive dynamics, and market opportunities.",
+            "vrio_framework": f"""{base_context}
             
-            "go_to_market_strategy": f"{base_context} Develop comprehensive go-to-market plan including channel selection, customer acquisition strategy, brand messaging, and launch timeline.",
+            Analyze resources using VRIO framework evaluating:
+            VALUABLE: Revenue generation or cost reduction potential
+            RARE: Scarcity in market and competitive landscape
+            INIMITABLE: Barriers to replication and complexity
+            ORGANIZED: Organizational capability to exploit
             
-            "trend_analysis": f"{base_context} Identify industry trends, technology adoption patterns, regulatory changes, and their impact on the business.",
+            Provide competitive implications and strategic recommendations.""",
             
-            "benchmarking": f"{base_context} Compare against industry standards, competitor performance, and best practices. Identify performance gaps and improvement opportunities.",
+            "bcg_matrix": f"""{base_context}
             
-            "kpi_dashboard": f"{base_context} Design key performance indicators for customer acquisition, retention, financial performance, operational efficiency, and market position.",
+            Analyze business portfolio using BCG Matrix:
+            STARS: High growth, high market share opportunities
+            CASH COWS: Low growth, high market share profit generators
+            QUESTION MARKS: High growth, low market share investments
+            DOGS: Low growth, low market share challenges
             
-            "process_mapping": f"{base_context} Map core business processes, identify bottlenecks, inefficiencies, and automation opportunities.",
+            Provide strategic recommendations for each category.""",
             
-            "value_stream_mapping": f"{base_context} Analyze value-adding vs. non-value-adding activities, identify waste elimination opportunities, and lean implementation guidance.",
+            "competitive_landscape": f"""{base_context}
             
-            "lean_six_sigma": f"{base_context} Apply lean six sigma methodologies for quality improvement, error reduction, and process optimization.",
+            Comprehensive competitive analysis including:
+            1. Direct and indirect competitors
+            2. Market share and positioning
+            3. Competitive advantages and weaknesses
+            4. Pricing and value propositions
+            5. Strategic threats and opportunities
             
-            "capacity_planning": f"{base_context} Assess current capacity, forecast future demand, identify resource gaps, and plan for scalability.",
+            Provide detailed competitor profiles and strategic implications.""",
             
-            "cost_benefit_analysis": f"{base_context} Evaluate project viability with NPV calculations, benefit-cost ratios, and ROI projections.",
+            "customer_segmentation": f"""{base_context}
             
-            "working_capital_analysis": f"{base_context} Analyze short-term liquidity, cash conversion cycle, current asset and liability management, and cash flow optimization."
+            Detailed customer segmentation with:
+            1. Demographic segmentation
+            2. Psychographic profiling
+            3. Behavioral patterns
+            4. Needs-based segmentation
+            5. Customer personas and journey mapping
+            6. Targeting and positioning strategies
+            
+            Include actionable insights and recommendations.""",
+            
+            "financial_analysis": f"""{base_context}
+            
+            Comprehensive financial analysis including:
+            1. Profitability ratios and trends
+            2. Liquidity and cash flow analysis
+            3. Leverage and capital structure
+            4. Efficiency and asset utilization
+            5. Growth analysis and projections
+            6. Valuation and investment returns
+            
+            Provide specific metrics and strategic recommendations.""",
+            
+            "break_even_analysis": f"""{base_context}
+            
+            Detailed break-even analysis with:
+            1. Cost structure analysis (fixed/variable)
+            2. Break-even calculations and scenarios
+            3. Sensitivity analysis
+            4. Pricing strategy implications
+            5. Capacity planning requirements
+            6. Profitability improvement opportunities
+            
+            Include actionable insights and recommendations.""",
+            
+            "unit_economics": f"""{base_context}
+            
+            Comprehensive unit economics analysis:
+            1. Customer Acquisition Cost (CAC)
+            2. Customer Lifetime Value (CLTV)
+            3. CLTV/CAC ratio and sustainability
+            4. Contribution margins by product/service
+            5. Cohort analysis and retention
+            6. Scalability assessment
+            
+            Provide optimization strategies and recommendations.""",
+            
+            "revenue_model": f"""{base_context}
+            
+            Revenue model analysis including:
+            1. Revenue stream diversification
+            2. Pricing strategy optimization
+            3. Business model alternatives
+            4. Scalability and growth potential
+            5. Risk assessment and mitigation
+            6. Implementation roadmap
+            
+            Provide detailed recommendations and strategic guidance.""",
+            
+            "risk_assessment": f"""{base_context}
+            
+            Comprehensive risk assessment covering:
+            1. Strategic, operational, and financial risks
+            2. Cybersecurity and compliance risks
+            3. Risk probability and impact matrix
+            4. Mitigation strategies and controls
+            5. Business continuity planning
+            6. Risk monitoring and governance
+            
+            Provide actionable risk management recommendations.""",
+            
+            "scenario_analysis": f"""{base_context}
+            
+            Detailed scenario analysis including:
+            1. Best case, worst case, most likely scenarios
+            2. Key variables and sensitivity analysis
+            3. Strategic implications and options
+            4. Risk and opportunity assessment
+            5. Decision support framework
+            6. Monitoring and adaptation strategies
+            
+            Provide comprehensive scenario planning guidance.""",
+            
+            "market_intelligence": f"""{base_context}
+            
+            Comprehensive market intelligence covering:
+            1. Market size (TAM/SAM/SOM) and growth
+            2. Market segmentation and trends
+            3. Competitive intelligence and positioning
+            4. Customer insights and behavior
+            5. Industry trends and forecasting
+            6. Market entry strategies
+            
+            Provide detailed market insights and strategic recommendations.""",
+            
+            "go_to_market_strategy": f"""{base_context}
+            
+            Comprehensive go-to-market strategy including:
+            1. Market positioning and messaging
+            2. Product and pricing strategy
+            3. Sales and marketing approach
+            4. Distribution and channel strategy
+            5. Customer success framework
+            6. Launch planning and execution
+            
+            Provide detailed implementation roadmap and success metrics.""",
+            
+            "trend_analysis": f"""{base_context}
+            
+            Comprehensive trend analysis covering:
+            1. Industry and technology trends
+            2. Consumer and social trends
+            3. Economic and regulatory trends
+            4. Environmental and sustainability trends
+            5. Trend implications and opportunities
+            6. Strategic response recommendations
+            
+            Provide actionable trend insights and strategic guidance.""",
+            
+            "benchmarking": f"""{base_context}
+            
+            Comprehensive benchmarking analysis including:
+            1. Performance and competitive benchmarking
+            2. Functional and industry best practices
+            3. Gap analysis and improvement opportunities
+            4. Implementation roadmap and metrics
+            5. Continuous benchmarking framework
+            
+            Provide detailed benchmarking insights and recommendations.""",
+            
+            "kpi_dashboard": f"""{base_context}
+            
+            KPI dashboard design covering:
+            1. Strategic and financial KPIs
+            2. Customer and operational metrics
+            3. Innovation and employee KPIs
+            4. Market and competitive indicators
+            5. Dashboard design and governance
+            
+            Provide comprehensive KPI framework and implementation guidance.""",
+            
+            "process_mapping": f"""{base_context}
+            
+            Process mapping analysis including:
+            1. Core process identification and documentation
+            2. Bottleneck and efficiency analysis
+            3. Improvement opportunities and automation
+            4. Technology integration requirements
+            5. Performance measurement and governance
+            
+            Provide detailed process optimization recommendations.""",
+            
+            "value_stream_mapping": f"""{base_context}
+            
+            Value stream mapping analysis covering:
+            1. Current state analysis and waste identification
+            2. Value-added vs non-value-added activities
+            3. Future state design and optimization
+            4. Implementation roadmap and improvements
+            5. Continuous improvement framework
+            
+            Provide comprehensive value stream optimization guidance.""",
+            
+            "lean_six_sigma": f"""{base_context}
+            
+            Lean Six Sigma analysis including:
+            1. DMAIC methodology application
+            2. Quality management and waste elimination
+            3. Statistical analysis and process control
+            4. Standardization and continuous improvement
+            5. Change management and sustainability
+            
+            Provide detailed Lean Six Sigma implementation guidance.""",
+            
+            "capacity_planning": f"""{base_context}
+            
+            Capacity planning analysis covering:
+            1. Current capacity assessment and constraints
+            2. Demand forecasting and requirements
+            3. Resource planning and optimization
+            4. Scalability strategies and investment
+            5. Performance monitoring and contingency planning
+            
+            Provide comprehensive capacity planning recommendations.""",
+            
+            "cost_benefit_analysis": f"""{base_context}
+            
+            Cost-benefit analysis including:
+            1. Cost identification and quantification
+            2. Benefit assessment and valuation
+            3. Financial analysis (NPV, IRR, payback)
+            4. Risk assessment and sensitivity analysis
+            5. Alternative evaluation and recommendations
+            
+            Provide detailed investment decision framework.""",
+            
+            "working_capital_analysis": f"""{base_context}
+            
+            Working capital analysis covering:
+            1. Working capital components and cash cycle
+            2. Liquidity and efficiency analysis
+            3. Optimization strategies and policies
+            4. Risk management and technology solutions
+            5. Performance monitoring and improvement
+            
+            Provide comprehensive working capital optimization recommendations."""
         }
         
         return framework_prompts.get(framework, base_context)
