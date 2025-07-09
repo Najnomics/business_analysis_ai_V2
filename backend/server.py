@@ -742,7 +742,7 @@ class DocumentExportService:
         return buffer.read()
     
     def _add_analysis_content(self, story, content, styles):
-        """Add analysis content to story"""
+        """Add comprehensive analysis content to story"""
         if isinstance(content, dict):
             for key, value in content.items():
                 if isinstance(value, list):
@@ -750,13 +750,37 @@ class DocumentExportService:
                     for item in value:
                         if isinstance(item, dict):
                             factor = item.get('factor', str(item))
-                            story.append(Paragraph(f"• {factor}", styles['Normal']))
+                            impact = item.get('impact', '')
+                            confidence = item.get('confidence', '')
+                            evidence = item.get('evidence', '')
+                            
+                            item_text = f"• {factor}"
+                            if impact:
+                                item_text += f" (Impact: {impact})"
+                            if confidence:
+                                item_text += f" (Confidence: {confidence*100:.0f}%)"
+                            if evidence:
+                                item_text += f" - {evidence}"
+                            
+                            story.append(Paragraph(item_text, styles['Normal']))
                         else:
                             story.append(Paragraph(f"• {item}", styles['Normal']))
                 elif isinstance(value, str):
                     story.append(Paragraph(f"<b>{key.replace('_', ' ').title()}:</b> {value}", styles['Normal']))
+                elif isinstance(value, dict):
+                    story.append(Paragraph(f"<b>{key.replace('_', ' ').title()}:</b>", styles['Normal']))
+                    for subkey, subvalue in value.items():
+                        if isinstance(subvalue, str):
+                            story.append(Paragraph(f"  • {subkey.replace('_', ' ').title()}: {subvalue}", styles['Normal']))
+                        elif isinstance(subvalue, list):
+                            story.append(Paragraph(f"  • {subkey.replace('_', ' ').title()}: {', '.join(str(x) for x in subvalue)}", styles['Normal']))
+                        else:
+                            story.append(Paragraph(f"  • {subkey.replace('_', ' ').title()}: {subvalue}", styles['Normal']))
         elif isinstance(content, str):
             story.append(Paragraph(content, styles['Normal']))
+        elif content.get('raw_response'):
+            # Handle raw response content
+            story.append(Paragraph(content.get('analysis', 'No analysis available'), styles['Normal']))
     
     def generate_pptx_report(self, analysis: Dict[str, Any], style: str = "designed") -> bytes:
         """Generate PowerPoint report from analysis"""
