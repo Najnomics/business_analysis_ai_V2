@@ -38,7 +38,41 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 import aiosmtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from email_templates import *
+# Import email templates
+try:
+    from email_templates import *
+except ImportError:
+    # Fallback email templates if file doesn't exist
+    PASSWORD_RESET_SUBJECT = "Reset Your Password - Somna AI"
+    PASSWORD_RESET_TEMPLATE = """
+    <html><body>
+    <h2>Password Reset Request</h2>
+    <p>Hello {user_name},</p>
+    <p>Click <a href="{reset_link}">here</a> to reset your password.</p>
+    <p>Best regards, Somna AI Team</p>
+    </body></html>
+    """
+    
+    WELCOME_SUBJECT = "Welcome to Somna AI!"
+    WELCOME_TEMPLATE = """
+    <html><body>
+    <h2>Welcome to Somna AI!</h2>
+    <p>Hello {user_name},</p>
+    <p>Thank you for joining Somna AI! <a href="{dashboard_link}">Get started</a></p>
+    <p>Best regards, Somna AI Team</p>
+    </body></html>
+    """
+    
+    ANALYSIS_COMPLETE_SUBJECT = "Your Analysis is Ready!"
+    ANALYSIS_COMPLETE_TEMPLATE = """
+    <html><body>
+    <h2>Analysis Complete!</h2>
+    <p>Hello {user_name},</p>
+    <p>Your analysis for "{business_input}" is ready with {frameworks_count} frameworks analyzed.</p>
+    <p><a href="{dashboard_link}">View Results</a></p>
+    <p>Best regards, Somna AI Team</p>
+    </body></html>
+    """
 
 # Load environment variables
 ROOT_DIR = Path(__file__).parent
