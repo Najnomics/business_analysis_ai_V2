@@ -561,62 +561,6 @@ async def register(user_data: UserCreate, background_tasks: BackgroundTasks):
     }
 
 @api_router.post("/auth/login")
-
-@api_router.post("/auth/forgot-password")
-async def forgot_password(request: PasswordResetRequest, background_tasks: BackgroundTasks):
-    user = await db.users.find_one({"email": request.email})
-    if not user:
-        # Don't reveal if email exists or not
-        return {"message": "If the email exists, you will receive a password reset link"}
-    
-    # Generate reset token
-    reset_token = secrets.token_urlsafe(32)
-    expires_at = datetime.utcnow() + timedelta(hours=1)
-    
-    # Store reset token
-    await db.password_resets.insert_one({
-        "token": reset_token,
-        "user_id": user["id"],
-        "expires_at": expires_at,
-        "used": False
-    })
-    
-    # Send reset email
-    background_tasks.add_task(
-        email_service.send_password_reset_email,
-        user["name"],
-        user["email"],
-        reset_token
-    )
-    
-    return {"message": "If the email exists, you will receive a password reset link"}
-
-@api_router.post("/auth/reset-password")
-async def reset_password(request: PasswordReset):
-    # Find valid reset token
-    reset_record = await db.password_resets.find_one({
-        "token": request.token,
-        "used": False,
-        "expires_at": {"$gt": datetime.utcnow()}
-    })
-    
-    if not reset_record:
-        raise HTTPException(status_code=400, detail="Invalid or expired reset token")
-    
-    # Update password
-    new_password_hash = await hash_password(request.new_password)
-    await db.users.update_one(
-        {"id": reset_record["user_id"]},
-        {"$set": {"password_hash": new_password_hash}}
-    )
-    
-    # Mark token as used
-    await db.password_resets.update_one(
-        {"token": request.token},
-        {"$set": {"used": True}}
-    )
-    
-    return {"message": "Password reset successfully"}
 async def login(user_data: UserLogin):
     user_record = await db.users.find_one({"email": user_data.email})
     if not user_record or not await verify_password(user_data.password, user_record["password_hash"]):
