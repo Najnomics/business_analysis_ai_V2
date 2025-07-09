@@ -526,20 +526,33 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 
 # Authentication endpoints
 @api_router.post("/auth/register")
-async def register(user_data: UserCreate):
+async def register(user_data: UserCreate, background_tasks: BackgroundTasks):
+    # Check if user exists
     existing_user = await db.users.find_one({"email": user_data.email})
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     
-    hashed_password = await hash_password(user_data.password)
+    # Create user
+    user_dict = User(
+        name=user_data.name,
+        email=user_data.email
+    ).dict()
     
-    user = User(name=user_data.name, email=user_data.email)
-    user_dict = user.dict()
-    user_dict["password_hash"] = hashed_password
+    user_dict["password_hash"] = await hash_password(user_data.password)
     
     await db.users.insert_one(user_dict)
     
-    access_token = create_access_token(data={"sub": user.id})
+    # Create access token
+    access_token = create_access_token(data={"sub": user_dict["id"]})
+    
+    # Send welcome email
+    background_tasks.add_task(
+        email_service.send_welcome_email,
+        user_data.name,
+        user_data.email
+    )
+    
+    user = User(**user_dict)
     
     return {
         "access_token": access_token,
