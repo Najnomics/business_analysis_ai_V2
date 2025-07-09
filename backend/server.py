@@ -20,6 +20,7 @@ from enum import Enum
 import bcrypt
 import io
 import base64
+import secrets
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -34,6 +35,10 @@ from pptx.dml.color import RGBColor
 from docx import Document
 from docx.shared import Inches as DocxInches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+import aiosmtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email_templates import *
 
 # Load environment variables
 ROOT_DIR = Path(__file__).parent
