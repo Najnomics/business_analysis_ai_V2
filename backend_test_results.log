@@ -1,0 +1,69 @@
+Testing backend API at: http://localhost:8001/api
+
+=== Testing Root Endpoint ===
+Making request to: http://localhost:8001/api/
+Status Code: 200
+Response: {'message': 'Somna AI - Business Analysis Platform', 'version': '2.0.0', 'powered_by': 'Elite Global AI'}
+✅ Root endpoint test passed
+
+=== Testing Statistics Endpoint ===
+Status Code: 200
+Response: {'users': '12,847+', 'avgGenerationTime': '42 seconds', 'accountsCreated': '12,847', 'venturesAnalyzed': '23,156'}
+✅ Statistics endpoint test passed
+
+=== Testing User Registration ===
+Status Code: 200
+Response: {'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzYjY4N2YxMy03MzExLTQ5N2EtOGFiYS1hMTkyZDMwZDViMTkiLCJleHAiOjE3NTI0ODU2OTV9.ChOV__NHR5nyJ6S0DKo6FXRrwq1MHO-xA9471trxOmk', 'token_type': 'bearer', 'user': {'id': '3b687f13-7311-497a-8aba-a192d30d5b19', 'name': 'Test User', 'email': 'test_bd754deb-7286-4b18-bfb1-85cc08c83000@somna.ai', 'created_at': '2025-07-07T09:34:55.235854'}}
+✅ User registration test passed
+
+=== Testing User Login ===
+Status Code: 200
+Response: {'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzYjY4N2YxMy03MzExLTQ5N2EtOGFiYS1hMTkyZDMwZDViMTkiLCJleHAiOjE3NTI0ODU2OTV9.ChOV__NHR5nyJ6S0DKo6FXRrwq1MHO-xA9471trxOmk', 'token_type': 'bearer', 'user': {'id': '3b687f13-7311-497a-8aba-a192d30d5b19', 'name': 'Test User', 'email': 'test_bd754deb-7286-4b18-bfb1-85cc08c83000@somna.ai', 'created_at': '2025-07-07T09:34:55.235000'}}
+✅ User login test passed
+
+=== Testing Invalid Login ===
+Status Code: 401
+✅ Invalid login test passed
+
+=== Testing Protected Endpoint Without Authentication ===
+Status Code: 403
+✅ Protected endpoint without auth test passed
+
+=== Testing Business Analysis Creation ===
+Status Code: 200
+Response: {
+  "id": "22034bba-5348-4cca-b7ef-6a3d5f59ed26",
+  "user_id": "3b687f13-7311-497a-8aba-a192d30d5b19",
+  "business_name": "TechFlow AI",
+  "business_description": "AI-powered workflow automation platform",
+  "website_url": "https://techflow-ai.com",
+  "comprehensive_results": {},
+  "ai_consensus": {},
+  "confidence_score": 0.0,
+  "created_at": "2025-07-07T09:34:55.915559",
+  "updated_at": "2025-07-07T09:34:55.915562"
+}
+✅ Business analysis creation test passed
+
+=== Testing Analysis History ===
+Status Code: 404
+Response: {
+  "detail": "Analysis not found"
+}
+❌ Analysis history test failed: 
+
+=== Testing AI Integration ===
+❌ AI integration test failed: 
+
+=== Test Summary ===
+root_endpoint: ✅ PASSED
+stats_endpoint: ✅ PASSED
+user_registration: ✅ PASSED
+user_login: ✅ PASSED
+invalid_login: ✅ PASSED
+protected_endpoint_without_auth: ✅ PASSED
+business_analysis: ✅ PASSED
+analysis_history: ❌ FAILED
+ai_integration: ❌ FAILED
+
+Overall Result: ❌ SOME TESTS FAILED
