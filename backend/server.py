@@ -62,6 +62,15 @@ DEEPSEEK_BASE_URL = os.environ.get('DEEPSEEK_BASE_URL', 'https://api.deepseek.co
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
 DEMO_MODE = os.environ.get('DEMO_MODE', 'true').lower() == 'true'
 
+# Email Configuration
+SMTP_HOST = os.environ.get('SMTP_HOST', 'smtp.gmail.com')
+SMTP_PORT = int(os.environ.get('SMTP_PORT', '587'))
+SMTP_USER = os.environ.get('SMTP_USER')
+SMTP_PASSWORD = os.environ.get('SMTP_PASSWORD')
+SMTP_FROM_NAME = os.environ.get('SMTP_FROM_NAME', 'Somna AI')
+SMTP_FROM_EMAIL = os.environ.get('SMTP_FROM_EMAIL', 'noreply@somna-ai.com')
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
+
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
 
