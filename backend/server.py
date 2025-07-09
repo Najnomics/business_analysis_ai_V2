@@ -105,6 +105,76 @@ class AIModel(str, Enum):
     DEEPSEEK = "deepseek"
     GEMINI = "gemini"
 
+# Email Service
+class EmailService:
+    def __init__(self):
+        self.smtp_host = SMTP_HOST
+        self.smtp_port = SMTP_PORT
+        self.smtp_user = SMTP_USER
+        self.smtp_password = SMTP_PASSWORD
+        self.from_name = SMTP_FROM_NAME
+        self.from_email = SMTP_FROM_EMAIL
+        
+    async def send_email(self, to_email: str, subject: str, html_content: str):
+        if not self.smtp_user or not self.smtp_password:
+            logger.warning("Email credentials not configured, skipping email send")
+            return False
+            
+        try:
+            message = MIMEMultipart('alternative')
+            message['Subject'] = subject
+            message['From'] = f"{self.from_name} <{self.from_email}>"
+            message['To'] = to_email
+            
+            html_part = MIMEText(html_content, 'html')
+            message.attach(html_part)
+            
+            await aiosmtplib.send(
+                message,
+                hostname=self.smtp_host,
+                port=self.smtp_port,
+                start_tls=True,
+                username=self.smtp_user,
+                password=self.smtp_password,
+            )
+            logger.info(f"Email sent successfully to {to_email}")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to send email to {to_email}: {str(e)}")
+            return False
+    
+    async def send_welcome_email(self, user_name: str, user_email: str):
+        subject = WELCOME_SUBJECT
+        html_content = WELCOME_TEMPLATE.format(
+            user_name=user_name,
+            dashboard_link=f"{FRONTEND_URL}/dashboard"
+        )
+        await self.send_email(user_email, subject, html_content)
+    
+    async def send_password_reset_email(self, user_name: str, user_email: str, reset_token: str):
+        subject = PASSWORD_RESET_SUBJECT
+        reset_link = f"{FRONTEND_URL}/reset-password?token={reset_token}"
+        html_content = PASSWORD_RESET_TEMPLATE.format(
+            user_name=user_name,
+            reset_link=reset_link
+        )
+        await self.send_email(user_email, subject, html_content)
+    
+    async def send_analysis_complete_email(self, user_name: str, user_email: str, business_input: str, frameworks_count: int, confidence_score: float, ai_models: int):
+        subject = ANALYSIS_COMPLETE_SUBJECT
+        html_content = ANALYSIS_COMPLETE_TEMPLATE.format(
+            user_name=user_name,
+            business_input=business_input,
+            frameworks_count=frameworks_count,
+            confidence_score=int(confidence_score * 100),
+            ai_models=ai_models,
+            dashboard_link=f"{FRONTEND_URL}/dashboard"
+        )
+        await self.send_email(user_email, subject, html_content)
+
+# Initialize email service
+email_service = EmailService()
+
 # Pydantic Models
 class UserCreate(BaseModel):
     name: str
