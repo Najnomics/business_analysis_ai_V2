@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
+import AnalysisViewer from '../components/analysis/AnalysisViewer';
 import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
