@@ -1105,6 +1105,21 @@ class BusinessAnalysisService:
                 }
             )
             
+            # Send completion email
+            try:
+                user = await db.users.find_one({"id": analysis.user_id})
+                if user:
+                    await email_service.send_analysis_complete_email(
+                        user["name"],
+                        user["email"],
+                        analysis.business_input,
+                        len(frameworks),
+                        0.84,
+                        len(request.ai_models)
+                    )
+            except Exception as e:
+                logger.error(f"Failed to send completion email: {str(e)}")
+            
             # Clean up active analyses tracker
             if analysis.id in self.active_analyses:
                 del self.active_analyses[analysis.id]
